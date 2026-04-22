@@ -15,7 +15,6 @@ def get_kpis_filtered():
     WHERE 1=1
     """
 
-
 def get_monthly_transactions():
     return """
     SELECT
@@ -29,7 +28,6 @@ def get_monthly_transactions():
     JOIN dim_produits p ON t.produit_id = p.produit_id
     WHERE 1=1
     """
-
 
 def get_ca_agence():
     return """
@@ -45,14 +43,12 @@ def get_ca_agence():
     WHERE 1=1
     """
 
-
 def get_client_segment():
     return """
     SELECT segment_client, COUNT(*) AS total
     FROM dim_clients
     GROUP BY segment_client
     """
-
 
 
 # RISK
@@ -67,7 +63,6 @@ def get_risk_data():
     FROM fact_transactions t
     JOIN dim_clients c ON t.client_id = c.client_id
     """
-
 
 def get_top_risk_clients():
     return """

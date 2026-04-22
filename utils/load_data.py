@@ -4,11 +4,11 @@ from sqlalchemy import text
 from utils.connection_db import get_engine
 
 @st.cache_data
-def load_data(query, params=None):
+def load_data(query):
     try:
         engine = get_engine()
         with engine.connect() as conn:
-            result = conn.execute(text(query), params or {})
+            result = conn.execute(text(query))
             df = pd.DataFrame(result.fetchall(), columns=result.keys())
             return df
     except Exception as e:

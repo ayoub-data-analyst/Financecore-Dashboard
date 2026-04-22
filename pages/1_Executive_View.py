@@ -68,54 +68,47 @@ where = build_where()
 
 df_kpis = load_data(get_kpis_filtered() + where)
 
-if not df_kpis.empty:
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric("CA", df_kpis["ca_total"][0] or 0)
-    col2.metric("Transactions", df_kpis["total_transactions"][0] or 0)
-    col3.metric("Clients", df_kpis["clients_actifs"][0] or 0)
-    col4.metric("Marge", round(df_kpis["marge_moyenne"][0] or 0, 2))
+col1.metric("CA", df_kpis.iloc[0]["ca_total"])
+col2.metric("Transactions", df_kpis.iloc[0]["total_transactions"])
+col3.metric("Clients", df_kpis.iloc[0]["clients_actifs"])
+col4.metric("Marge", round(df_kpis.iloc[0]["marge_moyenne"], 2))
 
+# Draw a line
 st.divider()
 
 
 # Line Chart
 df_line = load_data(get_monthly_transactions() + where + " GROUP BY d.mois ORDER BY d.mois")
 
-if not df_line.empty:
-    st.plotly_chart(
-        px.line(df_line, x="mois", y=["total_debit", "total_credit"]),
-        use_container_width=True
-    )
+st.plotly_chart(
+    px.line(df_line, x="mois", y=["total_debit", "total_credit"]),
+)
 
 
 # Bar Chart
 
 df_bar = load_data(get_ca_agence() + where + " GROUP BY a.agence, p.produit ORDER BY total_ca DESC")
 
-if not df_bar.empty:
-    st.plotly_chart(
-        px.bar(df_bar, x="agence", y="total_ca", color="produit"),
-        use_container_width=True
-    )
+st.plotly_chart(
+    px.bar(df_bar, x="agence", y="total_ca", color="produit"),
+)
 
 
 # Pie
 
 df_pie = load_data(get_client_segment())
 
-if not df_pie.empty:
-    st.plotly_chart(
-        px.pie(df_pie, names="segment_client", values="total"),
-        use_container_width=True
-    )
+st.plotly_chart(
+    px.pie(df_pie, names="segment_client", values="total"),
+)
 
 
 # Export
 
-if not df_kpis.empty:
-    st.download_button(
-        "Export CSV",
-        df_kpis.to_csv(index=False),
-        "kpis.csv"
-    )
+st.download_button(
+    "Export CSV",
+    df_kpis.to_csv(index=False),
+    "kpis.csv"
+)
